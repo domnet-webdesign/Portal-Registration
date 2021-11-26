@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* NAVBAR */
+a .nav-link {
+    color: #fff;
+    font-weight: 600;
+}
+
+.important {
+    color: red;
+}
+
+label {
+    font-weight: 500;
+}
+
+.b-border {
+    border: 5px #275d2b;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.border_form {
+    border-color: black;
+}
+
+.verify {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+

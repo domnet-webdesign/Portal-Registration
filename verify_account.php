@@ -53,6 +53,7 @@
         $otp = $_POST['otp_code'];
 
         if($otp_num != $otp) {
+            
 
             ?>
                 <script>

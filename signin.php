@@ -114,6 +114,9 @@
                     </div>
 
                     <button type="submit" name="save" class="btn btn-success w-100">Login</button>
+                    <div class="alt-login text-center"><br>
+                        <p><a href="forgot_password.php">Forgot Password</a></p>
+                    </div>
 
                     <div class="terms text-center mt-3">
                         <p>Signing up signifies you've read and agree to our <br> 

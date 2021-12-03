@@ -25,7 +25,7 @@ include("includes/db.php");
 if(isset($_POST['submit'])) {
 
     $firstname          = mysqli_real_escape_string($conn, $_POST['firstname']);
-    $surname           = mysqli_real_escape_string($conn, $_POST['surname']);
+    $surname            = mysqli_real_escape_string($conn, $_POST['surname']);
     $phone              = mysqli_real_escape_string($conn, $_POST['phone']);
     $email              = mysqli_real_escape_string($conn, $_POST['email']);
     $password           = mysqli_real_escape_string($conn, $_POST['password']);

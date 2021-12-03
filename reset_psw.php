@@ -1,78 +1,63 @@
 <?php
 
-    //starting session
     session_start();
 
-    include("includes/db.php");
+?>
+
+<?php
+    if(isset($_POST["reset_password"])){
 
 
-    if(isset($_POST['save'])) {
+        include('includes/db.php');
 
-        $email              = mysqli_real_escape_string($conn, $_POST['email']);
-        $password           = mysqli_real_escape_string($conn, $_POST['password']);
+        $psw = $_POST["password"];
+        $con_psw = $_POST["confirmpassword"];
 
-        $login = "SELECT * FROM users WHERE email = '$email' AND password = '$password' LIMIT 1";
-        $result = mysqli_query($conn, $login);
+        $token = $_SESSION['token'];
+        $Email = $_SESSION['email'];
 
-        //Check if the record exist
-        if(mysqli_num_rows($result) > 0) {
+        //$hash = password_hash( $psw , PASSWORD_DEFAULT );
 
-            foreach($result as $data) {
-            
-                $user_id            = $data['userID'];
-                $user_firstname     = $data['firstname'];
-                $user_surname       = $data['surname'];
-                $user_phone         = $data['phone'];
-                $user_email         = $data['email'];
-                $verify             = $data['verify'];
-            
+        if($psw == $con_psw) {
+
+            $sql = mysqli_query($conn, "SELECT * FROM users WHERE email='$Email'");
+            $query = mysqli_num_rows($sql);
+  	        $fetch = mysqli_fetch_assoc($sql);
+
+
+            if($Email){
+                //$new_pass = $hash;
+                mysqli_query($conn, "UPDATE users SET password='$psw', con_password='$con_psw' WHERE email='$Email'");
+                ?>
+                <script>
+                    window.location.replace("signin.php");
+                    alert("<?php echo "your password has been succesful reset"?>");
+                </script>
+                <?php
+            }else{
+                ?>
+                <script>
+                    alert("<?php echo "Please try again"?>");
+                </script>
+                <?php
             }
-                //$_SESSION['auth'] = true;
-                $_SESSION['verify'] = "$verify"; //1= verified, 0 = not verified
-
-                $_SESSION['auth_user'] = [
-
-                    'user_id'               => $user_id,
-                    'user_firstname'        => $user_firstname,
-                    'user_surname'          => $user_surname,
-                    'user_phone'            => $user_phone,
-                    'user_email'            => $user_email
-
-                ];
-
-                if($_SESSION['verify'] == '1') { // 1 = Admin
-
-                    header("Location: profile.php");
-
-                }else if($_SESSION['verify'] == '0') { //0= user
-
-                    // header("Location: signin.php");
-
-                    ?>
-                        <script>
-                            alert("<?php echo "Please visit your email and verifiy your account"?>");
-                        </script>
-                    <?php
-
-                }
 
 
         }else {
-            
-            //$_SESSION['message'] = "Invalid Email or Password!!!";
-            // header("Location: signin.php");
+
             ?>
-                <script>
-                    alert("<?php echo "Invalid Email or Password!!!"?>");
-                </script>
+            <script>
+                alert("<?php echo "Password Not Matched"?>");
+            </script>
             <?php
 
         }
 
+        
     }
 
-
 ?>
+
 
 
 
@@ -127,59 +112,97 @@
             </div>
         </nav>
     </section>
-    
 
     <!-- Main Container -->
         <section class="container">
             <h1 class="display-5 mt-5" style="font-size: 1em;">Opening: Graduate Trainee Programme | Domnet Chemical Plc</h1>
             <p style="color: red; font-weight: 500;"><span>NOTE:</span> You have not applied for this opening until you 
         click on the "Submit Application" button in the single page section</p>
-            
-            <div class="mt-5 d-flex justify-content-center">
-                <form method="POST" action="" style="background-color: #fff; padding:40px; border-radius: 20px;">
-                            
-                    <label for="firstname">Email <span class="important">*</span></label>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope"></i></span>
-                        </div>
-                        <input name="email" type="email" value="" class="input form-control" id="email" placeholder="" required="true" aria-label="email" aria-describedby="basic-addon1" />
-                        
-                    </div>
 
+            <?php include('includes/message.php'); ?>
+
+            <div class="mt-5 d-flex justify-content-center">
+                <form method="POST" action="" style="background-color: #fff; padding:20px; border-radius: 20px;">
+                <h2 class="display-5 text-center">Reset Your Password</h2>
                     <label for="firstname">Password <span class="important">*</span></label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-lock"></i></span>
                         </div>
-                        <input name="password" type="password" value="" class="input form-control" id="lg_password" placeholder="" required="true" aria-label="password" aria-describedby="basic-addon1" />
+                        <input name="password" type="password" value="" class="input form-control" id="password" placeholder="" required="true" aria-label="password" aria-describedby="basic-addon1" />
                         <div class="input-group-append">
                             <span class="input-group-text">
-                            <i class="fa fa-eye" id="lg_show_eye"></i>
+                            <i class="fa fa-eye" id="show_eye"></i>
                             </span>
-
 
                             <script type="text/javascript"> 
 
-                                const lg_password = document.querySelector("#lg_password");
-                                const lg_show_eye = document.querySelector("#lg_show_eye");
+                                const password = document.querySelector("#password");
+                                const show_eye = document.querySelector("#show_eye");
+                        
 
-
-                                lg_show_eye.addEventListener("click", function(g) {
+                                show_eye.addEventListener("click", function(a) {
 
                                     // const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                                     // password.setAttribute('type', type);
                                     // this.classList.toggle('fa-eye-slash'); 
 
-                                    if (lg_password.getAttribute('type') === 'password') {
+                                    if (password.getAttribute('type') === 'password') {
 
-                                        lg_password.setAttribute('type', "text");
+                                        password.setAttribute('type', "text");
                                         this.classList.add('fa-eye-slash');
                                         this.classList.remove('fa-eye'); 
 
                                     }else{
                                     
-                                        lg_password.setAttribute('type', "password");
+                                        password.setAttribute('type', "password");
+                                        this.classList.add('fa-eye');
+                                        this.classList.remove('fa-eye-slash'); 
+                                    }
+
+                                });
+                            
+                                
+                            </script>
+
+                        </div>
+
+
+                    </div>
+
+                    <label for="firstname"> Confirm Password <span class="important">*</span></label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-lock"></i></span>
+                        </div>
+                        <input name="confirmpassword" type="password" value="" class="input form-control" id="cf_password" placeholder="" required="true" aria-label="password" aria-describedby="basic-addon1" />
+                        <div class="input-group-append">
+                            <span class="input-group-text" onclick="">
+                            <i class="fa fa-eye" id="cf_show_eye"></i>
+                            </span>
+
+
+                            <script type="text/javascript"> 
+
+                                const cf_password = document.querySelector("#cf_password");
+                                const cf_show_eye = document.querySelector("#cf_show_eye");
+
+
+                                cf_show_eye.addEventListener("click", function(h) {
+
+                                    // const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                                    // password.setAttribute('type', type);
+                                    // this.classList.toggle('fa-eye-slash'); 
+
+                                    if (cf_password.getAttribute('type') === 'password') {
+
+                                        cf_password.setAttribute('type', "text");
+                                        this.classList.add('fa-eye-slash');
+                                        this.classList.remove('fa-eye'); 
+
+                                    }else{
+                                    
+                                        cf_password.setAttribute('type', "password");
                                         this.classList.add('fa-eye');
                                         this.classList.remove('fa-eye-slash'); 
                                     }
@@ -192,27 +215,29 @@
                         </div>
                     </div>
 
-                    <button type="submit" name="save" class="btn btn-success w-100">Login</button>
-                    <div class="alt-login text-center"><br>
-                        <p><a href="forgot_password.php">Forgot Password</a></p>
-                    </div>
+                    
 
-                    <div class="terms text-center mt-3">
-                        <p>Signing up signifies you've read and agree to our <br> 
-                            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-                        </p>
-                    </div>        
-
-                    <div class="alt-login text-center">
-                        <p>Already have an account? <a href="signup.php">Register here</a></p>
-                    </div>
+                    <button type="submit" name="reset_password" class="btn btn-success w-100">Submit</button>
                 </form>
             </div>    
         </section>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-- Main CSS File -->
-    <link href="assets/main.js">
+    <!-- <link href="assets/main.js"> -->
 
     <!-- Assets JS Files -->
     <script src="assets/jquery/jquery.min.js"></script>
